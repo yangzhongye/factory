@@ -2,6 +2,7 @@ package com.yang.factory.controller
 
 import com.yang.factory.dto.GoodsDto
 import com.yang.factory.entity.Goods
+import com.yang.factory.entity.GoodsInOutDetail
 import com.yang.factory.service.GoodsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -65,6 +66,15 @@ class GoodsController {
     fun deleteGoods(@PathVariable goodsId: String): ResponseEntity<Void> {
         goodsService.deleteGoods(goodsId)
         return ResponseEntity.ok().build()
+    }
+
+    /**
+     * 查询物品进出详情
+     */
+    @GetMapping("/inOutDetail/{goodsId}")
+    fun queryGoodsInOutDetail(@PathVariable goodsId: String): ResponseEntity<List<GoodsInOutDetail>> {
+        val goodsInOutDetailList = goodsService.queryGoodsInOutDetail(goodsId)
+        return ResponseEntity.ok(goodsInOutDetailList)
     }
 
     /**

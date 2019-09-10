@@ -2,6 +2,7 @@ package com.yang.factory.service
 
 import com.yang.factory.dto.GoodsDto
 import com.yang.factory.entity.Goods
+import com.yang.factory.entity.GoodsInOutDetail
 import org.springframework.data.domain.Page
 import org.springframework.web.multipart.MultipartFile
 
@@ -17,6 +18,7 @@ interface GoodsService {
     fun updateGoods(goodsDto: GoodsDto)
     fun modifyQuantity(goodsDto: GoodsDto)
     fun deleteGoods(goodsId: String)
+    fun queryGoodsInOutDetail(goodsId: String): List<GoodsInOutDetail>
     fun uploadGoodsImg(file: MultipartFile, goodsId: String)
     fun queryGoodsImgIdList(goodsId: String): List<String?>
     fun queryGoodsImgContent(imgId: String): ByteArray

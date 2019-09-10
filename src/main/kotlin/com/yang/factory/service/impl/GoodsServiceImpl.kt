@@ -114,6 +114,13 @@ class GoodsServiceImpl: GoodsService {
                 .orElseThrow { RuntimeException("GoodsInfo not found") }
     }
 
+    override fun queryGoodsInOutDetail(goodsId: String): List<GoodsInOutDetail> {
+        val goodsInOutDetail = GoodsInOutDetail(null)
+        goodsInOutDetail.goodsId = goodsId
+        val goodsInOutDetailEx = Example.of(goodsInOutDetail)
+        return goodsInOutDetailRepository.findAll(goodsInOutDetailEx)
+    }
+
     @Transactional
     override fun uploadGoodsImg(file: MultipartFile, goodsId: String) {
         val goodsImgEntity = GoodsImg(UUID.randomUUID().toString(), goodsId, file.bytes, file.originalFilename)
