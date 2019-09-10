@@ -68,8 +68,9 @@ class GoodsServiceImpl: GoodsService {
     override fun updateGoods(goodsDto: GoodsDto) {
         val user = SecurityUtils.getSubject().principal as UserDto
         val goodsOptional = goodsRepository.findById(goodsDto.id ?: throw RuntimeException("Id can't be null"))
+        goodsOptional.orElseThrow { RuntimeException("GoodsInfo not found") }
         goodsOptional
-                .map {
+                .ifPresent {
                     it.name = goodsDto.name
                     it.number = goodsDto.number
                     it.note = goodsDto.note
@@ -78,7 +79,6 @@ class GoodsServiceImpl: GoodsService {
                     it.updateUserName = user.username
                     goodsRepository.save(it)
                 }
-                .orElseThrow { RuntimeException("GoodsInfo not found") }
     }
 
     @Transactional
@@ -86,8 +86,9 @@ class GoodsServiceImpl: GoodsService {
         val changeQuantity = goodsDto.quantity ?: BigDecimal.ZERO
         val user = SecurityUtils.getSubject().principal as UserDto
         val goodsOptional = goodsRepository.findById(goodsDto.id ?: throw RuntimeException("Id can't be null"))
+        goodsOptional.orElseThrow { RuntimeException("GoodsInfo not found") }
         goodsOptional
-                .map {
+                .ifPresent{
                     //修改更新数量
                     it.quantity = it.quantity?.add(changeQuantity) ?: changeQuantity
                     goodsRepository.save(it)
@@ -103,15 +104,13 @@ class GoodsServiceImpl: GoodsService {
                     goodsInOutDetail.operUserName = user.username
                     goodsInOutDetailRepository.save(goodsInOutDetail)
                 }
-                .orElseThrow { RuntimeException("GoodsInfo not found") }
     }
 
     @Transactional
     override fun deleteGoods(goodsId: String) {
         val goodsOptional = goodsRepository.findById(goodsId)
-        goodsOptional
-                .map { goodsRepository.deleteById(goodsId) }
-                .orElseThrow { RuntimeException("GoodsInfo not found") }
+        goodsOptional.orElseThrow { RuntimeException("GoodsInfo not found") }
+        goodsOptional.ifPresent { goodsRepository.deleteById(goodsId) }
     }
 
     override fun queryGoodsInOutDetail(goodsId: String): List<GoodsInOutDetail> {
@@ -141,8 +140,7 @@ class GoodsServiceImpl: GoodsService {
     @Transactional
     override fun deleteGoodsImg(imgId: String) {
         val goodsImgOptional = goodsImgRepository.findById(imgId)
-        goodsImgOptional
-                .map { goodsImgRepository.deleteById(imgId) }
-                .orElseThrow { RuntimeException("GoodsImg not found") }
+        goodsImgOptional.orElseThrow { RuntimeException("GoodsImg not found") }
+        goodsImgOptional.ifPresent { goodsImgRepository.deleteById(imgId) }
     }
 }
