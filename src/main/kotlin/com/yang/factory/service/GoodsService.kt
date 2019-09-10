@@ -14,5 +14,11 @@ interface GoodsService {
 
     fun queryGoodsPage(goodsParams: GoodsDto): Page<Goods>
     fun addGoods(goodsDto: GoodsDto): Goods
+    fun updateGoods(goodsDto: GoodsDto)
+    fun modifyQuantity(goodsDto: GoodsDto)
+    fun deleteGoods(goodsId: String)
     fun uploadGoodsImg(file: MultipartFile, goodsId: String)
+    fun queryGoodsImgIdList(goodsId: String): List<String?>
+    fun queryGoodsImgContent(imgId: String): ByteArray
+    fun deleteGoodsImg(imgId: String)
 }

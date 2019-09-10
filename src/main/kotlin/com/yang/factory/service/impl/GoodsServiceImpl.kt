@@ -5,7 +5,9 @@ import com.yang.factory.dto.GoodsDto
 import com.yang.factory.dto.UserDto
 import com.yang.factory.entity.Goods
 import com.yang.factory.entity.GoodsImg
+import com.yang.factory.entity.GoodsInOutDetail
 import com.yang.factory.repository.GoodsImgRepository
+import com.yang.factory.repository.GoodsInOutDetailRepository
 import com.yang.factory.service.GoodsService
 import org.apache.commons.lang3.StringUtils
 import org.apache.shiro.SecurityUtils
@@ -14,6 +16,8 @@ import org.springframework.data.domain.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.lang.RuntimeException
+import java.math.BigDecimal
 import java.util.*
 
 /**
@@ -28,6 +32,8 @@ class GoodsServiceImpl: GoodsService {
     lateinit var goodsRepository: GoodsRepository
     @Autowired
     lateinit var goodsImgRepository: GoodsImgRepository
+    @Autowired
+    lateinit var goodsInOutDetailRepository: GoodsInOutDetailRepository
 
     override fun queryGoodsPage(goodsParams: GoodsDto): Page<Goods> {
         val goods = Goods(null)
@@ -59,8 +65,77 @@ class GoodsServiceImpl: GoodsService {
     }
 
     @Transactional
+    override fun updateGoods(goodsDto: GoodsDto) {
+        val user = SecurityUtils.getSubject().principal as UserDto
+        val goodsOptional = goodsRepository.findById(goodsDto.id ?: throw RuntimeException("Id can't be null"))
+        goodsOptional
+                .map {
+                    it.name = goodsDto.name
+                    it.number = goodsDto.number
+                    it.note = goodsDto.note
+                    it.updateTime = Date()
+                    it.updateUserId = user.userId
+                    it.updateUserName = user.username
+                    goodsRepository.save(it)
+                }
+                .orElseThrow { RuntimeException("GoodsInfo not found") }
+    }
+
+    @Transactional
+    override fun modifyQuantity(goodsDto: GoodsDto) {
+        val changeQuantity = goodsDto.quantity ?: BigDecimal.ZERO
+        val user = SecurityUtils.getSubject().principal as UserDto
+        val goodsOptional = goodsRepository.findById(goodsDto.id ?: throw RuntimeException("Id can't be null"))
+        goodsOptional
+                .map {
+                    //修改更新数量
+                    it.quantity = it.quantity?.add(changeQuantity) ?: changeQuantity
+                    goodsRepository.save(it)
+
+                    //插入详情
+                    val goodsInOutDetail = GoodsInOutDetail(UUID.randomUUID().toString())
+                    goodsInOutDetail.goodsId = it.id
+                    goodsInOutDetail.type = if(changeQuantity >= BigDecimal.ZERO) "1" else "0"
+                    goodsInOutDetail.changeQuantity = changeQuantity.abs()
+                    goodsInOutDetail.currentQuantity = it.quantity
+                    goodsInOutDetail.createTime = Date()
+                    goodsInOutDetail.operUserId = user.userId
+                    goodsInOutDetail.operUserName = user.username
+                    goodsInOutDetailRepository.save(goodsInOutDetail)
+                }
+                .orElseThrow { RuntimeException("GoodsInfo not found") }
+    }
+
+    @Transactional
+    override fun deleteGoods(goodsId: String) {
+        val goodsOptional = goodsRepository.findById(goodsId)
+        goodsOptional
+                .map { goodsRepository.deleteById(goodsId) }
+                .orElseThrow { RuntimeException("GoodsInfo not found") }
+    }
+
+    @Transactional
     override fun uploadGoodsImg(file: MultipartFile, goodsId: String) {
         val goodsImgEntity = GoodsImg(UUID.randomUUID().toString(), goodsId, file.bytes, file.originalFilename)
         goodsImgRepository.save(goodsImgEntity)
+    }
+
+    override fun queryGoodsImgIdList(goodsId: String): List<String?> {
+        val goodsImgEx = Example.of(GoodsImg(null, goodsId, null, null))
+        return goodsImgRepository.findAll(goodsImgEx).map { it.id }
+    }
+
+    override fun queryGoodsImgContent(imgId: String): ByteArray {
+        val goodsImgOptional = goodsImgRepository.findById(imgId)
+        goodsImgOptional.orElseThrow{ RuntimeException("GoodsImg not found") }
+        return goodsImgOptional.map { it.content }.get()
+    }
+
+    @Transactional
+    override fun deleteGoodsImg(imgId: String) {
+        val goodsImgOptional = goodsImgRepository.findById(imgId)
+        goodsImgOptional
+                .map { goodsImgRepository.deleteById(imgId) }
+                .orElseThrow { RuntimeException("GoodsImg not found") }
     }
 }

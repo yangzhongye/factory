@@ -10,10 +10,11 @@ import java.math.BigDecimal
  */
 class GoodsDto: Serializable {
 
+    var id: String? = null
     var seqNo: Long? = null
     var number: String? = ""
     var name: String? = ""
-    var quantity: BigDecimal? = null
+    var quantity: BigDecimal? = BigDecimal.ZERO
     var note: String? = ""
 
     var page: Int = 0 //jpa 分页默认从0开始

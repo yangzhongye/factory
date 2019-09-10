@@ -13,14 +13,13 @@ import javax.persistence.Id
  * project:factory
  */
 @Entity
-data class GoodsInOutDetail(
-        @Id
-        val id: String,
-        val goodsId: String?,
-        val type: String?,
-        val changeQuantity: BigDecimal?,
-        val currentQuantity: BigDecimal?,
-        val createTime: Date?,
-        val operUserId: String?,
-        val operUserName: String?
-)
+data class GoodsInOutDetail(@Id val id: String?) {
+
+        var goodsId: String? = null
+        var type: String? = null
+        var changeQuantity: BigDecimal? = null
+        var currentQuantity: BigDecimal? = null
+        var createTime: Date? = null
+        var operUserId: String? = null
+        var operUserName: String? = null
+}
