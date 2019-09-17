@@ -1,6 +1,5 @@
 package com.yang.factory.service
 
-import org.apache.shiro.crypto.hash.Sha256Hash
 import com.yang.factory.dto.UserDto
 import com.yang.factory.entity.User
 import com.yang.factory.repository.UserRepository
