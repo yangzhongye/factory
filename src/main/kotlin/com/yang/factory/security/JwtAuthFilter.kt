@@ -84,7 +84,7 @@ class JwtAuthFilter(private val userService: UserService) : AuthenticatingFilter
             val user = subject.principal as UserDto
             val shouldRefresh = shouldTokenRefresh(JwtUtils.getIssuedAt(token.token))
             if (shouldRefresh) {
-                newToken = userService.generateJwtToken(user.username)
+                newToken = userService.generateJwtToken(user.username ?: throw RuntimeException("username is null"))
             }
         }
         if (StringUtils.isNotBlank(newToken))

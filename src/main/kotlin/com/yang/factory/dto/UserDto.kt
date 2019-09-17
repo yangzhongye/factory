@@ -1,5 +1,6 @@
 package com.yang.factory.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable
 
 
@@ -14,10 +15,13 @@ import java.io.Serializable
  */
 class UserDto: Serializable {
 
-    var username: String = ""
-    var password: CharArray? = null
-    var encryptPwd: String? = null
     var userId: String? = null
+    var username: String? = ""
+    var nickname: String? = ""
+    var password: CharArray? = null
+    @JsonIgnore
+    var encryptPwd: String? = null
+    @JsonIgnore
     var salt: String? = null
     var roles: List<String>? = null
 

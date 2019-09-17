@@ -12,14 +12,12 @@ import javax.persistence.Id
  * project:factory
  */
 @Entity
-data class User(
-        @Id
-        val id: String,
-        val name: String?,
-        val loginName: String?,
-        val loginPwd: String?,
-        val createTime: Date?,
-        val status: String?,
-        val updateTime: Date?,
-        val mngStatus: String?
-)
+data class User(@Id val id: String?){
+        var name: String? = null
+        var loginName: String? = null
+        var loginPwd: String? = null
+        var createTime: Date? = null
+        var status: String? = null
+        var updateTime: Date? = null
+        var mngStatus: String? = null
+}
