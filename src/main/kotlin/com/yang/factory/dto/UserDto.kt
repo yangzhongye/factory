@@ -24,5 +24,8 @@ class UserDto: Serializable {
     @JsonIgnore
     var salt: String? = null
     var roles: List<String>? = null
+    var token: String? = null
+    @JsonIgnore
+    var mngStatus: String? = null
 
 }

@@ -37,10 +37,11 @@ class LoginController(private val userService: UserService) {
             val user = subject.principal as UserDto
             val newToken = userService.generateJwtToken(user.username)
             response.setHeader("x-auth-token", newToken)
+            user.token = newToken
             //清空密码
             user.password = null
             //设置角色
-            user.roles = userService.getUserRoles(user.userId)
+            user.roles = userService.getUserRoles(user.mngStatus)
             return ResponseEntity.ok(user)
         } catch (e: AuthenticationException) {
             //logger.error("User {} login fail, Reason:{}", loginInfo.username, e.message)

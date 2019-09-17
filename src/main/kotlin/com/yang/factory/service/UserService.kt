@@ -75,11 +75,13 @@ class UserService {
     fun getUserInfo(userName: String): UserDto? {
         val userEx = User(null)
         userEx.loginName = userName
+        userEx.status = "1" //1-启用
         val userEntity = userRepository.findOne(Example.of(userEx)).get()
         val user = UserDto()
         user.userId = userEntity.id
         user.username = userEntity.loginName
         user.nickname = userEntity.name
+        user.mngStatus = userEntity.mngStatus
         //userId 做盐粒 Sha256Hash("123456", user.userId).toHex()
         user.encryptPwd = userEntity.loginPwd
         return user
@@ -90,8 +92,8 @@ class UserService {
      * @param userId
      * @return
      */
-    fun getUserRoles(userId: String?): List<String> {
-        return listOf("admin")
+    fun getUserRoles(mngStatus: String?): List<String> {
+        return listOf(if(mngStatus == "1") "admin" else "user")
     }
 
     /*companion object {
