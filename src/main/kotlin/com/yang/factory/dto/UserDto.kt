@@ -15,6 +15,7 @@ import java.io.Serializable
  */
 class UserDto: Serializable {
 
+    @JsonIgnore
     var userId: String? = null
     var username: String? = ""
     var nickname: String? = ""
