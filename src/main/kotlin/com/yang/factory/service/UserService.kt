@@ -30,7 +30,7 @@ class UserService {
      * 保存user登录信息，返回token
      * @param userDto
      */
-    fun generateJwtToken(username: String): String? {
+    fun generateJwtToken(username: String?): String? {
         //val salt = JwtUtils.generateSalt()
         /**
          * @todo 将salt保存到数据库或者缓存中

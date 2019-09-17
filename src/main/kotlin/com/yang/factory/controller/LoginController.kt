@@ -35,7 +35,7 @@ class LoginController(private val userService: UserService) {
             val token = UsernamePasswordToken(loginInfo.username, loginInfo.password)
             subject.login(token)
             val user = subject.principal as UserDto
-            val newToken = userService.generateJwtToken(user.username ?: throw RuntimeException("username is null"))
+            val newToken = userService.generateJwtToken(user.username)
             response.setHeader("x-auth-token", newToken)
             //清空密码
             user.password = null

@@ -49,7 +49,7 @@ object JwtUtils {
      * @param time 过期时间s
      * @return 加密的token
      */
-    fun sign(username: String, salt: String, time: Long): String? {
+    fun sign(username: String?, salt: String, time: Long): String? {
         try {
             val date = Date(System.currentTimeMillis() + time * 1000)
             val algorithm = Algorithm.HMAC256(salt)
