@@ -27,7 +27,7 @@ class GoodsController {
      * 分页查询列表
      */
     @GetMapping("/page")
-    fun queryGoodsPage(@RequestBody goodsParams: GoodsDto): ResponseEntity<Page<Goods>> {
+    fun queryGoodsPage(goodsParams: GoodsDto): ResponseEntity<Page<Goods>> {
         val page = goodsService.queryGoodsPage(goodsParams)
         return ResponseEntity.ok(page)
     }
